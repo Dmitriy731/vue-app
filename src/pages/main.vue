@@ -36,6 +36,7 @@
   }
 
   function createDay(item = {}) {
+    const code = item.day?.condition?.code
     const date = item.date ? new Date(item.date) : null
     return {
       day: date ? days[date.getDay()] || '-' : '-',
@@ -48,7 +49,7 @@
         : '-',
       temperature: item.day?.avgtemp_c ?? '-',
       weather: item.day?.condition?.text ?? '-',
-      icon: item.day?.condition?.icon ?? '-',
+      icon: code === 1000 ? 'sun' : code === 1003 || code === 1006 || code === 1009 || code === 1030 ? 'sun-cloud' : code >= 1063 && code <= 1282 ? 'rain-cloud' : '',
       humidity: item.day?.avghumidity ?? '-',
       precipitation: item.day?.totalprecip_in ?? '-',
       wind: item.day?.maxwind_mph ?? '-',
@@ -70,6 +71,8 @@
       }
 
       const data = await fetchWeather(locUser)
+      console.log(data);
+      
       dataWeather.value.city = data.location.name || cityUser
       dataWeather.value.data = data.forecast.forecastday.map(createDay)
     } catch (err) {
